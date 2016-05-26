@@ -7,23 +7,20 @@
  * @author: ajp
  */
 
-import accesoDato.Datos;
-import accesoDato.test.DatosPrueba;
-import accesoUsr.Presentacion;
+import accesoDatos.Datos;
+import accesoDatos.test.DatosPrueba;
+import accesoUsr.control.ControlSesion;
 
 public class JVPrincipal {	
-	public static void main(String[] args) {				
-		final int  MAX_USUARIOS_PRUEBA = 10;
-		Datos datos = Datos.getInstancia();
-		DatosPrueba.cargarUsuariosPrueba(MAX_USUARIOS_PRUEBA);
-		
-		Presentacion presentacion = new Presentacion();
-		
-		presentacion.mostrar(datos.textoDatosUsuarios());
-
-		if (presentacion.iniciarSesion(datos)) {
-			presentacion.arrancarSimulacion();
+	public static void main(String[] args) {					
+		DatosPrueba.cargarSimulacionPrueba();
+			
+		if (args.length == 0) { 
+			new ControlSesion();
 		}	
+		else {
+			new ControlSesion(args[0]);
+		}
 	}
 
 } //class

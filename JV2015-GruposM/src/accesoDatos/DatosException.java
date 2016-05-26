@@ -8,14 +8,14 @@
  *  @author: ajp
  */
 
-package accesoDato;
+package accesoDatos;
 
-public class AccesoDatosException extends Exception {
+public class DatosException extends Exception {
 
 	/**
 	 * Excepción por defecto sin mensaje
 	 */
-	public AccesoDatosException() {
+	public DatosException() {
 		super();
 	}
 	
@@ -23,7 +23,7 @@ public class AccesoDatosException extends Exception {
 	 * Excepción con mensaje
 	 * @param msg - el mensaje de error asociado
 	 */
-	public AccesoDatosException(String msg) {
+	public DatosException(String msg) {
 		super(msg);
 	}
 }

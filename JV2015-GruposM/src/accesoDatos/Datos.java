@@ -1,10 +1,18 @@
-package accesoDato;
+package accesoDatos;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
-import modelo.*;
+import modelo.Contraseña;
+import modelo.Correo;
+import modelo.Direccion;
+import modelo.Mundo;
+import modelo.Nif;
+import modelo.Patron;
+import modelo.SesionUsuario;
+import modelo.Simulacion;
+import modelo.Usuario;
 import modelo.Usuario.RolUsuario;
 import util.Fecha;
 
@@ -68,8 +76,8 @@ public class Datos {
 		return datosMundos;
 	}
 
-	public void setDatosSimulaciones(ArrayList<Simulacion> datosSimulaciones) {
-		this.datosSimulaciones = datosSimulaciones;
+	public ArrayList<Simulacion> getDatosSimulaciones() {
+		return datosSimulaciones;
 	}
 
 	public int getSesionesRegistradas() {
@@ -85,22 +93,11 @@ public class Datos {
 	}
 
 	/**
-	 * Añade una nueva equivalencias para idUsr.
-	 * @param usr
-	 */
-	public void registrarEquivalenciaId(Usuario usr) {	 
-		assert usr != null;
-		equivalenciasId.put(usr.getIdUsr(), usr.getIdUsr());
-		equivalenciasId.put(usr.getNif().getTexto(), usr.getIdUsr());
-		equivalenciasId.put(usr.getCorreo().getTexto(), usr.getIdUsr());	
-	}
-
-	/**
 	 * Alta de usuario inserción binaria en orden.
 	 * @param usr - el usuario a guardar.
-	 * @throws AccesoDatosException 
+	 * @throws DatosException 
 	 */
-	public void altaUsuario(Usuario usr) throws AccesoDatosException {
+	public void altaUsuario(Usuario usr) throws DatosException {
 		assert usr != null;
 		int comparacion;
 		int inicio = 0;
@@ -113,9 +110,8 @@ public class Datos {
 			comparacion = datosUsuarios.get(medio).getIdUsr()
 					.compareToIgnoreCase(usr.getIdUsr());
 			if (comparacion == 0) {			
-				noExisteUsuario = false;		// Ya existe.
-				break;       				  
-			}	
+				throw new DatosException("El Usuario ya existe...");   				  
+			}		
 			if (comparacion < 0) {
 				inicio = medio + 1;
 			}			
@@ -123,15 +119,78 @@ public class Datos {
 				fin = medio - 1;
 			}
 		}	
-		if (noExisteUsuario) {
-			datosUsuarios.add(inicio, usr); 	// Inserta el usuario en orden.
-			registrarEquivalenciaId(usr);
-		}	
-		else {
-			throw new AccesoDatosException("El Usuario ya existe...");
-		}
+		datosUsuarios.add(inicio, usr); 	// Inserta el usuario en orden.
+		registrarEquivalenciaId(usr);		
 	}
 
+	/**
+	 * Añade una nueva equivalencias para idUsr.
+	 * @param usr
+	 */
+	private void registrarEquivalenciaId(Usuario usr) {	 
+		assert usr != null;
+		equivalenciasId.put(usr.getIdUsr(), usr.getIdUsr());
+		equivalenciasId.put(usr.getNif().getTexto(), usr.getIdUsr());
+		equivalenciasId.put(usr.getCorreo().getTexto(), usr.getIdUsr());	
+	}
+	
+	/**
+	 * Alta de mundo inserción binaria en orden.
+	 * @param mundo - el mundo a guardar.
+	 * @throws DatosException 
+	 */
+	public void altaMundo(Mundo mundo) throws DatosException {
+		assert mundo != null;
+		int comparacion;
+		int inicio = 0;
+		int fin = datosMundos.size() - 1;
+		int medio = 0;
+		boolean noExisteUsuario = true;
+		while (inicio <= fin) {
+			medio = (inicio + fin) / 2;			// Calcula posición central.
+			// compara los dos id. Obtiene < 0 si id va después que medio.
+			comparacion = datosMundos.get(medio).getNombre()
+					.compareToIgnoreCase(mundo.getNombre());
+			if (comparacion == 0) {			
+				throw new DatosException("El Mundo ya existe...");   				  
+			}		
+			if (comparacion < 0) {
+				inicio = medio + 1;
+			}			
+			else {
+				fin = medio - 1;
+			}
+		}	
+		datosMundos.add(inicio, mundo); 	// Inserta el mundo en orden.		
+	}
+	
+	/**
+	 * Añade una nueva sesión en el almacén de datos.
+	 * @param sesionUsuario a guardar.
+	 */
+	public void registrarSesion(SesionUsuario sesionUsuario) {
+		assert sesionUsuario != null;
+		datosSesiones.add(sesionUsuario);	
+	}
+
+	/**
+	 * Añade una nuevo patrón en el almacén de datos.
+	 * @param patron a guardar.
+	 */
+	public void altaPatron(Patron patron) {
+		assert patron != null;
+		datosPatrones.add(patron);	
+	}
+
+	/**
+	 * Añade una nueva simulación en el almacén de datos.
+	 * @param simulacion a guardar.
+	 */
+	public void altaSimulacion(Simulacion simulacion) {
+		assert simulacion != null;
+		datosSimulaciones.add(simulacion);
+	}
+	
 	/**
 	 * Búsqueda de usuario.
 	 * @param usr - el Usuario a buscar.
@@ -172,39 +231,41 @@ public class Datos {
 	}
 	
 	/**
-	 * Añade una nueva sesión en el almacén de datos.
-	 * @param sesionUsuario a guardar.
+	 * Búsqueda de Mundo.
+	 * @param mundo - el Mundo a buscar.
+	 * @return - el Mundo encontrado o null si no existe.
 	 */
-	public void registrarSesion(SesionUsuario sesionUsuario) {
-		assert sesionUsuario != null;
-		datosSesiones.add(sesionUsuario);	
-	}
-
-	/**
-	 * Añade una nuevo mundo en el almacén de datos.
-	 * @param mundo a guardar.
-	 */
-	public void altaMundo(Mundo mundo) {	
+	public Mundo buscarMundo(Mundo mundo) {
 		assert mundo != null;
-		datosMundos.add(mundo);	
+		return this.buscarMundo(mundo.getNombre());				
 	}
-
+	
 	/**
-	 * Añade una nuevo patrón en el almacén de datos.
-	 * @param patron a guardar.
+	 * Búsqueda binaria de mundo dado su nombre.
+	 * @param nombreMundo - el nombre del mundo a buscar.
+	 * @return - el Mundo encontrado o null si no existe.
 	 */
-	public void altaPatron(Patron patron) {
-		assert patron != null;
-		datosPatrones.add(patron);	
-	}
-
-	/**
-	 * Añade una nueva simulación en el almacén de datos.
-	 * @param simulacion a guardar.
-	 */
-	public void altaSimulacion(Simulacion simulacion) {
-		assert simulacion != null;
-		datosSimulaciones.add(simulacion);
+	public Mundo buscarMundo(String nombreMundo) {
+		assert nombreMundo != null;
+		int comparacion;
+		int inicio = 0;
+		int fin = datosMundos.size() - 1;
+		int medio;
+		while (inicio <= fin) {
+			medio = (inicio + fin) / 2;
+			comparacion = datosMundos.get(medio).getNombre()
+					.compareToIgnoreCase(nombreMundo);
+			if (comparacion == 0) {
+				return datosMundos.get(medio);
+			}
+			if (comparacion < 0) {
+				inicio = medio + 1;
+			}
+			else {
+				fin = medio - 1;
+			}
+		}
+		return null;				
 	}
 
 	/**
