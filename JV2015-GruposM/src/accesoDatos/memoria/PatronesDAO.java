@@ -112,22 +112,47 @@ public class PatronesDAO implements OperacionesDAO {
 			}
 		}
 	}
-
+	
+	/*
+	 * Baja de un patrón ya existente.
+	 * Muestra mensaje de error si no se ha podido dar de baja.
+	 */
 	@Override
 	public Object baja(String id) throws DatosException {
-		// TODO Auto-generated method stub
+		try{
+			datosPatrones.remove(obtener(id));
+		}
+		catch(Exception e){
+			System.out.println("Error al intentar dar de baja el objeto con id= " + id);
+		}
 		return null;
 	}
 
 	@Override
 	public void actualizar(Object obj) throws DatosException {
-		// TODO Auto-generated method stub
 		
+		try{
+			
+		}
+		catch(Exception e){
+			
+		}
 	}
 
+	/*
+	 * Lista los datos de los Patrones existentes.
+	 * Muestra mensaje de error si no se han podido listar.
+	 */
 	@Override
 	public String listarDatos() {
-		// TODO Auto-generated method stub
+		try{
+			for (Patron p : datosPatrones){
+				System.out.println(p);
+			}
+		}
+		catch(Exception e){
+			System.out.println("No se ha podido listar los datos de los Patrones.");
+		}
 		return null;
 	} 
 	

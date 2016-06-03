@@ -167,6 +167,7 @@ public class PatronesDAO implements OperacionesDAO, Persistente {
 		}
 	}
 
+	
 	@Override
 	public Object baja(String id) throws DatosException {
 		
