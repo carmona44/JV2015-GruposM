@@ -115,28 +115,23 @@ public class PatronesDAO implements OperacionesDAO {
 	
 	/*
 	 * Baja de un patrón ya existente.
-	 * Muestra mensaje de error si no se ha podido dar de baja.
+	 * Lanza una excepción si la id pasada por parámetro es null o si al obtener el objeto correspondiente a la id
+	 * también es nulo.
 	 */
 	@Override
 	public Object baja(String id) throws DatosException {
-		try{
-			datosPatrones.remove(obtener(id));
-		}
-		catch(Exception e){
-			System.out.println("Error al intentar dar de baja el objeto con id= " + id);
-		}
+		
+		assert id == null;
+		assert obtener(id) == null;
+		datosPatrones.remove(obtener(id));
+		
 		return null;
 	}
 
 	@Override
 	public void actualizar(Object obj) throws DatosException {
 		
-		try{
-			
-		}
-		catch(Exception e){
-			
-		}
+		
 	}
 
 	/*
