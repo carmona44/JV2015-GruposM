@@ -170,20 +170,48 @@ public class PatronesDAO implements OperacionesDAO, Persistente {
 	
 	@Override
 	public Object baja(String id) throws DatosException {
-		
-		return null;
+		Patron patron = obtener(id);
+		if (patron != null) {
+			
+			datosPatrones.remove(patron);
+		}	
+		else {
+			
+			throw new DatosException("BAJA: El Patron no existe...");
+		}
+		return patron;
 	}
 
 	@Override
 	public void actualizar(Object obj) throws DatosException {
 		
-		
+		Patron patron = (Patron) obj;
+		Patron patronAux = obtener(patron.getNombre());
+		if (patronAux != null) {	
+			
+			patronAux.setEsquema(patron.getEsquema());
+			datosPatrones.set(datosPatrones.indexOf(patron), patronAux);
+		}	
+		else {
+			
+			throw new DatosException("ACTUALIZAR: El Patron no existe...");
+		}
 	}
 
 	@Override
 	public String listarDatos() {
 		
-		return null;
+		StringBuilder listado = new StringBuilder();
+		
+		for (Patron patron: datosPatrones) {
+			
+			if (patron != null) {
+				
+				listado.append("\n" + patron); 
+			}
+		}
+		
+		return listado.toString();
 	} 
 	
 } //class

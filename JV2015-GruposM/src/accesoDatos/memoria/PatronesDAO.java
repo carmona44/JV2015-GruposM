@@ -121,17 +121,33 @@ public class PatronesDAO implements OperacionesDAO {
 	@Override
 	public Object baja(String id) throws DatosException {
 		
-		assert id == null;
-		assert obtener(id) == null;
-		datosPatrones.remove(obtener(id));
-		
-		return null;
+		Patron patron = obtener(id);
+		if (patron != null) {
+			// Elimina el Mundo del almacen de datos.
+			datosPatrones.remove(patron);
+		}	
+		else {
+			throw new DatosException("BAJA: El Patron no existe...");
+		}
+		return patron;
 	}
 
+	/*
+	 * Reemplaza los objetos almacenados por los objetos pasados por parámetros.
+	 */
 	@Override
 	public void actualizar(Object obj) throws DatosException {
 		
-		
+		Patron patron = (Patron) obj;
+		Patron patronAux = obtener(patron.getNombre());
+		if (patronAux != null) {	
+			patronAux.setEsquema(patron.getEsquema());	
+			// Actualización
+			datosPatrones.set(datosPatrones.indexOf(patron), patronAux);
+		}	
+		else {
+			throw new DatosException("ACTUALIZAR: El Patron no existe...");
+		}
 	}
 
 	/*
@@ -140,15 +156,13 @@ public class PatronesDAO implements OperacionesDAO {
 	 */
 	@Override
 	public String listarDatos() {
-		try{
-			for (Patron p : datosPatrones){
-				System.out.println(p);
+		StringBuilder listado = new StringBuilder();
+		for (Patron patron: datosPatrones) {
+			if (patron != null) {
+				listado.append("\n" + patron); 
 			}
 		}
-		catch(Exception e){
-			System.out.println("No se ha podido listar los datos de los Patrones.");
-		}
-		return null;
+		return listado.toString();
 	} 
 	
 } //class
